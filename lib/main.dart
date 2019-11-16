@@ -13,8 +13,15 @@ class ByteBankApp extends StatelessWidget {
   }
 }
 
-class FormularioTransferencia extends StatelessWidget {
-  // criando propriedades para armazenar o valor os inputs do formulário
+class FormularioTransferencia extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return FormularioTransferenciaState();
+  }
+}
+
+class FormularioTransferenciaState extends State<FormularioTransferencia> {
+// criando propriedades para armazenar o valor os inputs do formulário
   final TextEditingController _controllerNumeroConta = TextEditingController();
   final TextEditingController _controllerValor = TextEditingController();
 
@@ -24,23 +31,25 @@ class FormularioTransferencia extends StatelessWidget {
       appBar: AppBar(
         title: Text('Criando Transferência'),
       ),
-      body: Column(
-        children: <Widget>[
-          Editor(
-              controlador: _controllerNumeroConta,
-              rotulo: 'Numero da conta',
-              dica: '0000'),
-          Editor(
-            controlador: _controllerValor,
-            rotulo: 'Valor',
-            dica: '000.0',
-            icone: Icons.monetization_on,
-          ),
-          RaisedButton(
-            onPressed: () => _criaTransferencia(context),
-            child: Text('Confirmar'),
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Editor(
+                controlador: _controllerNumeroConta,
+                rotulo: 'Numero da conta',
+                dica: '0000'),
+            Editor(
+              controlador: _controllerValor,
+              rotulo: 'Valor',
+              dica: '000.0',
+              icone: Icons.monetization_on,
+            ),
+            RaisedButton(
+              onPressed: () => _criaTransferencia(context),
+              child: Text('Confirmar'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -129,7 +138,12 @@ class ListaTransferenciaState extends State<ListaTransferencias> {
           future.then((transferenciaRecebida) {
             debugPrint('then nessa merdaaaa');
             debugPrint('$transferenciaRecebida');
-            widget._transferencias.add(transferenciaRecebida);
+            if (transferenciaRecebida != null) {
+              // setState faz com que o build seja chamado e atualize o conteúdo
+              setState(() {
+                widget._transferencias.add(transferenciaRecebida);
+              });
+            }
           }); // no exemplo aqui a partir do confirmar que o valor é atribuido ao future
         }, // navegação nas telas
         child: Icon(Icons.add),
