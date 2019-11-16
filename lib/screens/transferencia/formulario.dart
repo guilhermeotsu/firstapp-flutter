@@ -56,10 +56,13 @@ class FormularioTransferenciaState extends State<FormularioTransferencia> {
     final int numeroConta = int.tryParse(_controllerNumeroConta.text);
     final double valor = double.tryParse(_controllerValor.text);
 
+    _atualiza(numeroConta, valor, context);
+  }
+
+  void _atualiza(int numeroConta, double valor, BuildContext context) {
+    
     if (numeroConta != null && valor != null) {
       final transferenciaCriada = Transferencia(valor, numeroConta);
-      debugPrint('criando a merda da transferencia');
-      debugPrint('$transferenciaCriada');
       // mandando a transferencia para o future da classe ListaTransferencia
       Navigator.pop(context, transferenciaCriada);
     }

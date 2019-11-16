@@ -43,8 +43,6 @@ class ListaTransferenciaState extends State<ListaTransferencias> {
           // then é a função de callback que só vai receber esse valor no momento que acontecer o valor
           // basicamente ele fica monitorando até os eventos até que ele receba o valor
           future.then((transferenciaRecebida) {
-            debugPrint('then nessa merdaaaa');
-            debugPrint('$transferenciaRecebida');
             if (transferenciaRecebida != null) {
               // setState faz com que o build seja chamado e atualize o conteúdo
               setState(() {
