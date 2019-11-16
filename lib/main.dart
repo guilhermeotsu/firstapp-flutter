@@ -88,21 +88,28 @@ class Editor extends StatelessWidget {
 }
 
 // classe para refatorar o código
-class ListaTransferencias extends StatelessWidget {
+class ListaTransferencias extends StatefulWidget {
   final List<Transferencia> _transferencias = List();
 
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return ListaTransferenciaState();
+  }
+}
+
+class ListaTransferenciaState extends State<ListaTransferencias> {
   // sobrescrever o método obrigatório
   @override
   Widget build(BuildContext context) {
-    _transferencias.add(Transferencia(100, 1100));
     return Scaffold(
       appBar: AppBar(
         title: Text('Tranferências'),
       ),
       body: ListView.builder(
-        itemCount: _transferencias.length,
+        itemCount: widget._transferencias.length,
         itemBuilder: (context, index) {
-          final Transferencia transferencia = _transferencias[index];
+          final Transferencia transferencia = widget._transferencias[index];
           return ItemTransferencia(transferencia);
         },
       ),
@@ -122,7 +129,7 @@ class ListaTransferencias extends StatelessWidget {
           future.then((transferenciaRecebida) {
             debugPrint('then nessa merdaaaa');
             debugPrint('$transferenciaRecebida');
-            _transferencias.add(transferenciaRecebida);
+            widget._transferencias.add(transferenciaRecebida);
           }); // no exemplo aqui a partir do confirmar que o valor é atribuido ao future
         }, // navegação nas telas
         child: Icon(Icons.add),
