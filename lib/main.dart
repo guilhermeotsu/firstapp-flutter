@@ -7,7 +7,7 @@ class ByteBankApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: FormularioTransferencia(),
+        body: ListaTransferencias(),
       ),
     );
   }
@@ -37,7 +37,7 @@ class FormularioTransferencia extends StatelessWidget {
             icone: Icons.monetization_on,
           ),
           RaisedButton(
-            onPressed: () => _criaTransferencia(),
+            onPressed: () => _criaTransferencia(context),
             child: Text('Confirmar'),
           ),
         ],
@@ -45,13 +45,17 @@ class FormularioTransferencia extends StatelessWidget {
     );
   }
 
-  void _criaTransferencia() {
+  void _criaTransferencia(BuildContext context) {
     // fazendo a conversão de valores
     final int numeroConta = int.tryParse(_controllerNumeroConta.text);
     final double valor = double.tryParse(_controllerValor.text);
 
     if (numeroConta != null && valor != null) {
       final transferenciaCriada = Transferencia(valor, numeroConta);
+      debugPrint('criando a merda da transferencia');
+      debugPrint('$transferenciaCriada');
+      // mandando a transferencia para o future da classe ListaTransferencia
+      Navigator.pop(context, transferenciaCriada);
     }
   }
 }
@@ -85,20 +89,42 @@ class Editor extends StatelessWidget {
 
 // classe para refatorar o código
 class ListaTransferencias extends StatelessWidget {
+  final List<Transferencia> _transferencias = List();
+
   // sobrescrever o método obrigatório
   @override
   Widget build(BuildContext context) {
+    _transferencias.add(Transferencia(100, 1100));
     return Scaffold(
       appBar: AppBar(
         title: Text('Tranferências'),
       ),
-      body: Column(
-        children: <Widget>[
-          ItemTransferencia(Transferencia(200.0, 1001)),
-          ItemTransferencia(Transferencia(300.0, 100)),
-        ],
+      body: ListView.builder(
+        itemCount: _transferencias.length,
+        itemBuilder: (context, index) {
+          final Transferencia transferencia = _transferencias[index];
+          return ItemTransferencia(transferencia);
+        },
       ),
       floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // future vai receber o retorna da fução
+          final Future<Transferencia> future = Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return FormularioTransferencia();
+              },
+            ),
+          );
+          // then é a função de callback que só vai receber esse valor no momento que acontecer o valor
+          // basicamente ele fica monitorando até os eventos até que ele receba o valor
+          future.then((transferenciaRecebida) {
+            debugPrint('then nessa merdaaaa');
+            debugPrint('$transferenciaRecebida');
+            _transferencias.add(transferenciaRecebida);
+          }); // no exemplo aqui a partir do confirmar que o valor é atribuido ao future
+        }, // navegação nas telas
         child: Icon(Icons.add),
       ),
     );
